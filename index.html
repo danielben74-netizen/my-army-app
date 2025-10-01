@@ -23,7 +23,6 @@
                         <option value="6">6 שעות</option>
                         <option value="7">7 שעות</option>
                         <option value="8">8 שעות</option>
-                        <option value="9" disabled>9 שעות (לא מומלץ)</option>
                     </select>
                 </div>
                 <button id="auto-calculate-btn">חשב זמן אידיאלי</button>
@@ -34,22 +33,22 @@
         <section class="input-section">
             <h2>2. רשימת חיילים 🧑‍🤝‍🧑</h2>
             <div class="input-group">
-                <input type="text" id="soldier-name-input" placeholder="שם חייל" title="הכנס שם חייל">
+                <input type="text" id="soldier-name-input" placeholder="הכנס שם חייל">
                 <button id="add-soldier-btn">הוסף חייל</button>
             </div>
             <ul id="soldiers-list" class="data-list"></ul>
         </section>
 
         <section class="input-section">
-            <h2>3. עמדות שמירה 📍</h2>
+            <h2>3. הגדרת עמדות שמירה 📍</h2>
             <div class="input-group">
-                <input type="text" id="post-name-input" placeholder="שם עמדה (לדוגמה: שער)" title="הכנס שם עמדה">
-                <input type="number" id="post-guards-input" value="1" min="1" step="1" title="מספר שומרים דרוש">
+                <input type="text" id="post-name-input" placeholder="שם עמדה (לדוגמה: שער ראשי)">
+                <input type="number" id="post-guards-input" value="1" min="1" placeholder="מס' שומרים נדרשים">
                 <button id="add-post-btn">הוסף עמדה</button>
             </div>
             <ul id="posts-list" class="data-list"></ul>
         </section>
-
+        
         <section class="input-section mandatory-assignments-section">
             <h2>4. שיבוץ חובה לעמדות (אופציונלי) 📌</h2>
             <div class="input-group">
@@ -76,8 +75,8 @@
         <section id="schedule-section" class="output-section" style="display: none;">
             <h2>6. סידור שמירה מלא 🗓️</h2>
             <div class="schedule-controls">
-                <button id="copy-schedule-btn">העתק טבלה (טקסט)</button> 
-                <button id="export-image-btn" style="background-color: #6f42c1;">ייצוא כתמונה (PNG) 🖼️</button> 
+                <button id="export-image-btn">ייצוא כתמונה (PNG) 🖼️</button>
+                <button id="copy-schedule-btn">העתק טבלה (טקסט)</button>
             </div>
             <div class="schedule-grid">
                 </div>

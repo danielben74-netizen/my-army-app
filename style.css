@@ -39,99 +39,137 @@ h2 {
     border-radius: 8px;
 }
 
-/* עיצוב לאזור בחירת משך המשמרת */
+/* עיצוב לאזור בחירת משך המשמרת החדש */
 .shift-setup-section .input-group-shift {
+    background-color: #e0f7fa; /* תכלת בהיר */
+    border: 1px solid #00bcd4;
+    padding: 15px;
+    border-radius: 8px;
     display: flex;
-    align-items: center;
-    gap: 15px;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .shift-input-container {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
+}
+
+.shift-input-container label {
+    font-size: 1.2em;
+    color: #00798c;
+    font-weight: bold;
+    min-width: 180px;
+}
+
+/* עיצוב ה-SELECT החדש */
+#shift-duration-input {
+    padding: 10px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 120px; /* רוחב נוח יותר */
+    text-align: center;
 }
 
 .unit-label {
-    font-weight: bold;
-    color: #495057;
+    font-size: 1.1em;
+    color: #343a40;
 }
 
-/* קלט כללי */
+#auto-calculate-btn {
+    padding: 10px 15px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    width: 100%;
+    max-width: 300px;
+    align-self: flex-end;
+}
+
+#auto-calculate-btn:hover {
+    background-color: #5a6268;
+}
+
+.note {
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+/* עיצוב קבוצות קלט רגילות */
 .input-group {
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
 }
 
-.input-group input[type="text"], 
+.input-group input[type="text"],
 .input-group input[type="number"],
-.input-group select,
-.shift-input-container select { /* הוספתי כלל ל-select במשמרת */
+.input-group select {
     padding: 10px;
-    border: 1px solid #ced4da;
+    border: 1px solid #ccc;
     border-radius: 5px;
     flex-grow: 1;
-    text-align: right;
-    min-width: 120px; /* רוחב נוח לנייד */
-    font-size: 1.1em;
-    height: 40px;
 }
 
-
-.input-group input[type="number"] {
-    width: 80px;
-    flex-grow: 0;
-}
-
-
-.input-section button, #generate-schedule-btn, #auto-calculate-btn {
+.input-group button {
     padding: 10px 15px;
-    background-color: #007bff;
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    font-weight: bold;
-    flex-shrink: 0;
+    transition: background-color 0.2s;
 }
 
-.input-section button:hover, #generate-schedule-btn:hover, #auto-calculate-btn:hover:not(:disabled) {
-    background-color: #0056b3;
+.input-group button:hover {
+    background-color: #1e7e34;
 }
 
-#generate-schedule-btn {
-    display: block;
-    width: 100%;
-    font-size: 1.2em;
-    margin: 20px 0;
+/* שיבוץ חובה - עיצוב חדש */
+.mandatory-assignments-section {
+    background-color: #fff3cd; /* צהוב בהיר */
+    border-color: #ffc107;
 }
 
-#generate-schedule-btn:disabled {
-    background-color: #adb5bd;
-    cursor: not-allowed;
+.mandatory-assignments-section h2 {
+    color: #856404;
 }
 
-#auto-calculate-btn {
-    background-color: #6c757d;
+.mandatory-assignments-section .input-group select {
+    border: 1px solid #ffc107;
 }
+
+#add-mandatory-assignment-btn {
+    background-color: #ffc107;
+    color: #343a40;
+}
+#add-mandatory-assignment-btn:hover:not(:disabled) {
+    background-color: #e0a800;
+}
+
 
 /* רשימות נתונים */
 .data-list {
     list-style: none;
     padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .data-list li {
+    background-color: #e9ecef;
+    padding: 8px 12px;
+    border-radius: 20px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    margin-bottom: 5px;
-    background-color: #f8f9fa;
-    border: 1px solid #bee5eb;
-    border-radius: 5px;
     font-size: 1.1em;
 }
 
@@ -139,21 +177,35 @@ h2 {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.2em;
-    padding: 0 5px;
-    line-height: 1;
+    margin-right: 5px;
+    font-size: 0.9em;
 }
 
-/* פלט סיכום */
-.output-section {
-    margin-top: 30px;
+/* כפתור יצירת סידור */
+#generate-schedule-btn {
+    width: 100%;
     padding: 15px;
-    border: 1px solid #ddd;
+    font-size: 1.5em;
+    background-color: #ffc107;
+    color: #343a40;
+    border: none;
     border-radius: 8px;
-    background-color: #f8f9fa;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
 }
 
-#summary-output > ul {
+#generate-schedule-btn:hover:not(:disabled) {
+    background-color: #e0a800;
+}
+
+#generate-schedule-btn:disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+}
+
+/* סיכום - עיצוב מעודכן לרישום לפי עמדה */
+#summary-output ul {
     list-style: none;
     padding: 0;
 }
@@ -161,7 +213,7 @@ h2 {
 #summary-output > ul > li {
     padding: 10px;
     margin-bottom: 15px;
-    background-color: #e9ecef;
+    background-color: #d1ecf1;
     border: 1px solid #bee5eb;
     border-radius: 5px;
     font-size: 1.1em;
@@ -180,43 +232,34 @@ h2 {
     font-weight: normal;
 }
 
-/* כפתורי שליטה בטבלה */
+/* כפתורי העתקה וייצוא */
 .schedule-controls {
     margin-bottom: 15px;
-    display: flex; 
-    gap: 10px; 
+    text-align: left; /* יישור לשמאל ב-RTL */
 }
 
-/* כפתור העתקת טקסט */
-#copy-schedule-btn {
+#copy-schedule-btn, #export-image-btn {
     padding: 10px 15px;
-    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
     transition: background-color 0.3s;
+    margin-left: 5px;
 }
 
+#copy-schedule-btn {
+    background-color: #007bff;
+}
 #copy-schedule-btn:hover {
     background-color: #0056b3;
 }
-
-/* כפתור ייצוא תמונה (חדש) */
 #export-image-btn {
-    padding: 10px 15px;
     background-color: #6f42c1; /* סגול */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s;
 }
-
 #export-image-btn:hover {
-    background-color: #593699;
+    background-color: #593796;
 }
 
 
@@ -224,73 +267,44 @@ h2 {
 .schedule-grid {
     display: grid;
     overflow-x: auto;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+    min-width: 100%;
 }
 
 .schedule-header, .schedule-row {
-    display: contents; /* מאפשר לילדים להיכנס ישירות לגריד */
+    display: contents;
 }
 
-.schedule-header .schedule-cell {
-    background-color: #343a40;
-    color: white;
-    font-weight: bold;
+.schedule-cell {
     padding: 10px;
-    border: 1px solid #212529;
-    position: sticky; /* נשאר דביק למעלה */
+    border: 1px solid #eee;
+    text-align: center;
+    min-width: 80px;
+}
+
+/* תיקון נראות הכותרות! */
+.schedule-header .schedule-cell {
+    font-weight: bold;
+    background-color: #343a40; /* צבע רקע כהה */
+    color: white; /* טקסט לבן */
+    border: 1px solid #212529; 
+    position: sticky;
     top: 0;
     z-index: 10;
 }
 
-.schedule-row .schedule-cell {
-    padding: 10px;
-    border: 1px solid #eee;
-    background-color: #fff;
-    font-size: 0.9em;
-    min-height: 40px; /* גובה מינימלי לשורה */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.schedule-row:nth-child(even) .schedule-cell:not(.time-cell) {
-    background-color: #f8f9fa; /* גוון בהיר לשורות זוגיות */
-}
-
 .time-cell {
+    background-color: #f8f9fa;
     font-weight: bold;
-    background-color: #e9ecef !important; 
+    min-width: 120px;
     position: sticky;
     right: 0;
     z-index: 5;
-    border-right: none;
-    border-left: 1px solid #eee;
 }
 
 .guard-cell span {
     display: block;
-    padding: 2px 5px;
-    margin: 1px 0;
-    border-radius: 3px;
-    background-color: #d1ecf1;
-    color: #0c5460;
-    font-size: 0.85em;
-    width: 90%;
-}
-
-/* פתרון פוטנציאלי לבעיות html2canvas (מוודא שיש צבע רקע קשיח) */
-.schedule-grid * {
-    background-color: inherit; 
-}
-
-.schedule-header .schedule-cell, 
-.time-cell,
-.schedule-row .schedule-cell:not(.time-cell) {
-    background-color: #fff !important; 
-}
-
-.schedule-row:nth-child(even) .schedule-cell:not(.time-cell) {
-    background-color: #f8f9fa !important; 
+    padding: 2px 0;
 }

@@ -2,13 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // ############### הגדרות קבועות ###############
     const DAY_DURATION_MINUTES = 24 * 60; // 1440 דקות
     const DAY_DURATION_HOURS = 24; 
-    // טווח הקלט הוגדר כעת ב-HTML SELECT, אך אנו שומרים את הערכים המקסימליים לשם ולידציית חישוב
     const MIN_SHIFT_HOURS = 2; 
     const MAX_SHIFT_HOURS = 8;
     const DEFAULT_SHIFT_HOURS = 4;
 
     // ############### מערכי נתונים ###############
-    // יאכלסו מ-Local Storage או יישארו ריקים
     let soldiers = []; 
     let posts = [];
     let mandatoryAssignments = []; 
@@ -45,50 +43,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyScheduleBtn = document.getElementById('copy-schedule-btn');
     const exportImageBtn = document.getElementById('export-image-btn');
     
-
     
     // ############### פונקציות שמירה וטעינה (Local Storage) ###############
     
     function saveData() {
         // שומר את הנתונים ב-Local Storage
-        localStorage.setItem('soldiers', JSON.stringify(soldiers));
-        localStorage.setItem('posts', JSON.stringify(posts));
-        localStorage.setItem('mandatoryAssignments', JSON.stringify(mandatoryAssignments));
-        localStorage.setItem('shiftDurationHours', shiftDurationInput.value);
+        try {
+            localStorage.setItem('soldiers', JSON.stringify(soldiers));
+            localStorage.setItem('posts', JSON.stringify(posts));
+            localStorage.setItem('mandatoryAssignments', JSON.stringify(mandatoryAssignments));
+            localStorage.setItem('shiftDurationHours', shiftDurationInput.value);
+        } catch (e) {
+            console.error("Failed to save data to local storage", e);
+        }
     }
     
     function loadData() {
-        const savedSoldiers = localStorage.getItem('soldiers');
-        const savedPosts = localStorage.getItem('posts');
-        const savedAssignments = localStorage.getItem('mandatoryAssignments');
-        const savedShiftDuration = localStorage.getItem('shiftDurationHours');
+        try {
+            const savedSoldiers = localStorage.getItem('soldiers');
+            const savedPosts = localStorage.getItem('posts');
+            const savedAssignments = localStorage.getItem('mandatoryAssignments');
+            const savedShiftDuration = localStorage.getItem('shiftDurationHours');
 
-        if (savedSoldiers) {
-            try {
-                const parsedSoldiers = JSON.parse(savedSoldiers);
-                if (Array.isArray(parsedSoldiers)) soldiers = parsedSoldiers;
-            } catch (e) { /* ignore */ }
-        }
-        if (savedPosts) {
-            try {
-                const parsedPosts = JSON.parse(savedPosts);
-                if (Array.isArray(parsedPosts)) posts = parsedPosts;
-            } catch (e) { /* ignore */ }
-        }
-        if (savedAssignments) {
-            try {
-                const parsedAssignments = JSON.parse(savedAssignments);
-                if (Array.isArray(parsedAssignments)) mandatoryAssignments = parsedAssignments;
-            } catch (e) { /* ignore */ }
-        }
-        if (savedShiftDuration) {
-            // טעינת הערך ל-SELECT (אם קיים)
-            const option = shiftDurationInput.querySelector(`option[value="${savedShiftDuration}"]`);
-            if (option) {
-                shiftDurationInput.value = savedShiftDuration;
+            if (savedSoldiers) soldiers = JSON.parse(savedSoldiers);
+            if (savedPosts) posts = JSON.parse(savedPosts);
+            if (savedAssignments) mandatoryAssignments = JSON.parse(savedAssignments);
+
+            if (savedShiftDuration) {
+                // טעינת הערך ל-SELECT (אם קיים)
+                const option = shiftDurationInput.querySelector(`option[value="${savedShiftDuration}"]`);
+                if (option) {
+                    shiftDurationInput.value = savedShiftDuration;
+                }
             }
+        } catch (e) {
+            console.error("Failed to load data from local storage", e);
         }
-        
+
         // קריאה לפונקציות הרינדור לאחר הטעינה
         renderSoldiers();
         renderPosts();
@@ -99,14 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
         updateGenerateButton();
     }
 
+
     // ############### 1. טיפול בקלט משך משמרת (דינמי) ###############
     
     function updateShiftDuration(shouldSave = true) { 
-        // הקלט כעת מגיע משדה <select>, אין צורך בוולידציית טווח אגרסיבית
+        // הקלט כעת מגיע משדה <select>
         let hours = parseInt(shiftDurationInput.value, 10);
         
-        // אם הערך לא חוקי משום מה, נחזיר לברירת מחדל, אבל בדרך כלל ה-select מונע זאת
-        if (isNaN(hours) || hours < MIN_SHIFT_HOURS || hours > 9) {
+        if (isNaN(hours) || hours < MIN_SHIFT_HOURS || hours > MAX_SHIFT_HOURS) {
             hours = DEFAULT_SHIFT_HOURS;
             shiftDurationInput.value = DEFAULT_SHIFT_HOURS;
         }
@@ -117,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         shiftDurationNote.innerHTML = `זמן מנוחה מינימלי בין שמירות יוגדר אוטומטית להיות: <strong>${hours} שעות</strong>.`;
         
+        // איפוס כפתור החישוב האידיאלי לאחר שינוי ידני
         autoCalculateBtn.textContent = 'חשב זמן אידיאלי';
         autoCalculateBtn.style.backgroundColor = '#6c757d'; 
         
@@ -144,8 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let minDeviation = Infinity;
         let perfectMatch = false;
 
-        // סריקה בטווח 2-8 שעות (או עד 9 כפי שנתת אופציה, למרות ש-8 נפוץ יותר)
-        for (let h = MIN_SHIFT_HOURS; h <= 8; h++) {
+        // סריקה בטווח 2-8 שעות
+        for (let h = MIN_SHIFT_HOURS; h <= MAX_SHIFT_HOURS; h++) {
             if (DAY_DURATION_HOURS % h === 0) {
                 
                 const numShiftsPerDay = DAY_DURATION_HOURS / h;
@@ -160,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (Math.abs(totalGuardTimeWithH - idealGuardTimePerSoldier) < 0.001) {
                          bestShiftHours = h;
                          perfectMatch = true;
-                         break; 
+                         break; // נמצא שוויון מושלם, הפסק
                     }
                 }
                 
@@ -593,12 +585,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const header = document.createElement('div');
         header.classList.add('schedule-header');
-        header.innerHTML = `
-            <div class="schedule-cell">שעה</div>
-            ${posts.map(p => `<div class="schedule-cell">${p.name} (${p.guards})</div>`).join('')}
-        `;
+        
+        // **התיקון לכותרות הטבלה:** יצירת כותרת מפורשת לכל עמדה
+        let headerHTML = `<div class="schedule-cell">שעה</div>`;
+        posts.forEach(p => {
+            headerHTML += `<div class="schedule-cell">${p.name} (${p.guards})</div>`;
+        });
+        
+        header.innerHTML = headerHTML;
         scheduleGrid.appendChild(header);
         
+        // הגדרת עמודות ה-Grid
         scheduleGrid.style.gridTemplateColumns = `1fr repeat(${posts.length}, 1fr)`;
 
         fullSchedule.forEach(shift => {
@@ -629,7 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // ############### 7. פונקציית העתקת הטבלה (העתקת טקסט - נשמר כאופציה משנית) ###############
+    // ############### 7. פונקציית העתקת הטבלה (טקסט) ###############
     
     function copyScheduleTable() {
         const grid = document.querySelector('.schedule-grid');
@@ -639,43 +636,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let textContent = '';
-        const numCols = posts.length + 1; // שעה + מספר עמדות
         
-        // איסוף כל התאים לפי הסדר המוצג ב-DOM
-        const allCells = Array.from(grid.querySelectorAll('.schedule-cell'));
-        
-        if (allCells.length === 0) {
-            alert('לא נמצאו נתונים בטבלת הסידור.');
-            return;
+        // 1. כותרות
+        const headerRow = grid.querySelector('.schedule-header');
+        if (headerRow) {
+             const headers = Array.from(headerRow.children).map(c => c.textContent.trim());
+             textContent += headers.join('\t') + '\n'; // הפרדה בטאב
+        }
+       
+        // 2. שורות נתונים 
+        for (let i = 1; i < grid.children.length; i++) {
+            const row = grid.children[i];
+            const rowCells = Array.from(row.children);
+            
+            let rowText = rowCells.map(cell => {
+                // המרה של HTML טבלה לטקסט נקי
+                if (cell.classList.contains('guard-cell')) {
+                    // הסרת תגי HTML ופיצול שומרים בפסיק ורווח
+                    return cell.textContent.trim().replace(/\s*\n\s*/g, ', ');
+                }
+                return cell.textContent.trim();
+            }).join('\t'); // הפרדה בטאב
+            
+            textContent += rowText + '\n';
         }
 
-        // בניית הטקסט המועתק בצורה טבלאית
-        for (let i = 0; i < allCells.length; i++) {
-            const cell = allCells[i];
-            
-            let cellText;
-            if (cell.classList.contains('guard-cell')) {
-                // עבור תא שומרים: קח את כל תוכני ה-<span> והפרד בפסיק ורווח
-                cellText = Array.from(cell.querySelectorAll('span')).map(span => span.textContent.trim()).join(', ');
-            } else {
-                // עבור תא שעה או כותרת: טקסט רגיל
-                cellText = cell.textContent.trim();
-            }
-            
-            textContent += cellText;
-
-            const cellIndexInRow = i % numCols;
-
-            if (cellIndexInRow === numCols - 1) {
-                // סוף שורה (העמודה האחרונה)
-                textContent += '\n';
-            } else {
-                // אמצע שורה
-                textContent += '\t';
-            }
-        }
-
-        // העתקה ללוח
+        // 3. העתקה ללוח
         navigator.clipboard.writeText(textContent).then(() => {
             copyScheduleBtn.textContent = '✔️ הועתק בהצלחה!';
             copyScheduleBtn.style.backgroundColor = '#28a745';
@@ -689,11 +675,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // ############### 8. פונקציית ייצוא תמונה (השיטה האמינה) ###############
+    // ############### 8. פונקציית ייצוא תמונה (PNG) ###############
 
     function exportScheduleAsImage() {
+        // בדיקה שהספרייה נטענה (מה שדורש את התגית ב-index.html)
         if (typeof html2canvas === 'undefined') {
-             alert('הספרייה ליצירת תמונה לא נטענה. אנא רענן את העמוד.');
+             alert('הספרייה ליצירת תמונה לא נטענה. אנא רענן את העמוד, וודא שהקוד של index.html מעודכן.');
              return;
         }
 
@@ -708,7 +695,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // שימוש בספריית html2canvas
         html2canvas(scheduleGrid, {
-            // הגדרות להבטחת איכות טובה
             scale: 2, 
             backgroundColor: '#ffffff', 
             logging: false
@@ -744,6 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
             exportImageBtn.disabled = false;
         });
     }
+
 
     copyScheduleBtn.addEventListener('click', copyScheduleTable);
     exportImageBtn.addEventListener('click', exportScheduleAsImage); 
