@@ -39,7 +39,7 @@ h2 {
     border-radius: 8px;
 }
 
-/* עיצוב לאזור בחירת משך המשמרת החדש */
+/* עיצוב לאזור בחירת משך המשמרת */
 .shift-setup-section .input-group-shift {
     display: flex;
     align-items: center;
@@ -66,13 +66,18 @@ h2 {
 
 .input-group input[type="text"], 
 .input-group input[type="number"],
-.input-group select {
+.input-group select,
+.shift-input-container select { /* הוספתי כלל ל-select במשמרת */
     padding: 10px;
     border: 1px solid #ced4da;
     border-radius: 5px;
     flex-grow: 1;
     text-align: right;
+    min-width: 120px; /* רוחב נוח לנייד */
+    font-size: 1.1em;
+    height: 40px;
 }
+
 
 .input-group input[type="number"] {
     width: 80px;
@@ -273,4 +278,19 @@ h2 {
     color: #0c5460;
     font-size: 0.85em;
     width: 90%;
+}
+
+/* פתרון פוטנציאלי לבעיות html2canvas (מוודא שיש צבע רקע קשיח) */
+.schedule-grid * {
+    background-color: inherit; 
+}
+
+.schedule-header .schedule-cell, 
+.time-cell,
+.schedule-row .schedule-cell:not(.time-cell) {
+    background-color: #fff !important; 
+}
+
+.schedule-row:nth-child(even) .schedule-cell:not(.time-cell) {
+    background-color: #f8f9fa !important; 
 }

@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ############### הגדרות קבועות ###############
     const DAY_DURATION_MINUTES = 24 * 60; // 1440 דקות
     const DAY_DURATION_HOURS = 24; 
+    // טווח הקלט הוגדר כעת ב-HTML SELECT, אך אנו שומרים את הערכים המקסימליים לשם ולידציית חישוב
     const MIN_SHIFT_HOURS = 2; 
     const MAX_SHIFT_HOURS = 8;
     const DEFAULT_SHIFT_HOURS = 4;
@@ -40,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const summarySection = document.getElementById('summary-section');
     const scheduleSection = document.getElementById('schedule-section');
     
-    // אלמנטים להעתקה וייצוא (מעודכן)
+    // אלמנטים להעתקה וייצוא
     const copyScheduleBtn = document.getElementById('copy-schedule-btn');
     const exportImageBtn = document.getElementById('export-image-btn');
     
@@ -63,32 +64,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const savedShiftDuration = localStorage.getItem('shiftDurationHours');
 
         if (savedSoldiers) {
-            // טיפול בשמירה ריקה או פגומה
             try {
                 const parsedSoldiers = JSON.parse(savedSoldiers);
                 if (Array.isArray(parsedSoldiers)) soldiers = parsedSoldiers;
-            } catch (e) {
-                console.error("Failed to parse soldiers data:", e);
-            }
+            } catch (e) { /* ignore */ }
         }
         if (savedPosts) {
             try {
                 const parsedPosts = JSON.parse(savedPosts);
                 if (Array.isArray(parsedPosts)) posts = parsedPosts;
-            } catch (e) {
-                console.error("Failed to parse posts data:", e);
-            }
+            } catch (e) { /* ignore */ }
         }
         if (savedAssignments) {
             try {
                 const parsedAssignments = JSON.parse(savedAssignments);
                 if (Array.isArray(parsedAssignments)) mandatoryAssignments = parsedAssignments;
-            } catch (e) {
-                console.error("Failed to parse mandatory assignments data:", e);
-            }
+            } catch (e) { /* ignore */ }
         }
         if (savedShiftDuration) {
-            shiftDurationInput.value = savedShiftDuration;
+            // טעינת הערך ל-SELECT (אם קיים)
+            const option = shiftDurationInput.querySelector(`option[value="${savedShiftDuration}"]`);
+            if (option) {
+                shiftDurationInput.value = savedShiftDuration;
+            }
         }
         
         // קריאה לפונקציות הרינדור לאחר הטעינה
@@ -102,17 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ############### 1. טיפול בקלט משך משמרת (דינמי) ###############
-    // נוסף פרמטר shouldSave כדי למנוע קריאה כפולה ל-saveData במהלך הטעינה הראשונית
+    
     function updateShiftDuration(shouldSave = true) { 
+        // הקלט כעת מגיע משדה <select>, אין צורך בוולידציית טווח אגרסיבית
         let hours = parseInt(shiftDurationInput.value, 10);
         
-        // ולידציה - אכיפת טווח 2-8
-        if (isNaN(hours) || hours < MIN_SHIFT_HOURS) {
-            hours = MIN_SHIFT_HOURS;
-            shiftDurationInput.value = MIN_SHIFT_HOURS;
-        } else if (hours > MAX_SHIFT_HOURS) {
-            hours = MAX_SHIFT_HOURS;
-            shiftDurationInput.value = MAX_SHIFT_HOURS;
+        // אם הערך לא חוקי משום מה, נחזיר לברירת מחדל, אבל בדרך כלל ה-select מונע זאת
+        if (isNaN(hours) || hours < MIN_SHIFT_HOURS || hours > 9) {
+            hours = DEFAULT_SHIFT_HOURS;
+            shiftDurationInput.value = DEFAULT_SHIFT_HOURS;
         }
 
         // הגדרת משתנים
@@ -148,8 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let minDeviation = Infinity;
         let perfectMatch = false;
 
-        // סריקה בטווח 2-8 שעות בלבד
-        for (let h = MIN_SHIFT_HOURS; h <= MAX_SHIFT_HOURS; h++) {
+        // סריקה בטווח 2-8 שעות (או עד 9 כפי שנתת אופציה, למרות ש-8 נפוץ יותר)
+        for (let h = MIN_SHIFT_HOURS; h <= 8; h++) {
             if (DAY_DURATION_HOURS % h === 0) {
                 
                 const numShiftsPerDay = DAY_DURATION_HOURS / h;
@@ -164,11 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (Math.abs(totalGuardTimeWithH - idealGuardTimePerSoldier) < 0.001) {
                          bestShiftHours = h;
                          perfectMatch = true;
-                         break; // נמצא שוויון מושלם, הפסק
+                         break; 
                     }
                 }
                 
-                // אם אין שוויון מוחלט (נדרש רק אם לא נמצאה התאמה מושלמת)
                 const deviation = Math.abs(totalGuardTimeWithH - idealGuardTimePerSoldier);
                 
                 if (deviation < minDeviation) {
@@ -197,8 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 5000);
     }
     
+    // שימוש במאזין 'change' בלבד כיוון שמדובר ב-select
     shiftDurationInput.addEventListener('change', () => updateShiftDuration(true));
-    shiftDurationInput.addEventListener('input', () => updateShiftDuration(true));
     autoCalculateBtn.addEventListener('click', calculateIdealShiftDuration);
     
     // ############### פונקציות עזר כלליות ###############
@@ -322,7 +317,6 @@ document.addEventListener('DOMContentLoaded', () => {
     postsList.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-post-btn')) {
             const indexToRemove = parseInt(e.target.dataset.index, 10);
-            // הקפדה על כך ששם העמדה נשמר לפני המחיקה כדי למחוק שיבוצי חובה
             const postName = posts[indexToRemove]?.name; 
             posts.splice(indexToRemove, 1);
             
@@ -698,7 +692,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ############### 8. פונקציית ייצוא תמונה (השיטה האמינה) ###############
 
     function exportScheduleAsImage() {
-        // ודא שספריית html2canvas נטענה
         if (typeof html2canvas === 'undefined') {
              alert('הספרייה ליצירת תמונה לא נטענה. אנא רענן את העמוד.');
              return;

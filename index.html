@@ -14,9 +14,17 @@
             <h2>1. הגדרות משמרת ⏱️</h2>
             <div class="input-group-shift">
                 <div class="shift-input-container">
-                    <label for="shift-duration-input">משך משמרת (2 שעות - 8 שעות):</label>
-                    <input type="number" id="shift-duration-input" value="4" min="2" max="8" step="1" title="משך משמרת בשעות">
-                    <span class="unit-label">שעות</span>
+                    <label for="shift-duration-input">משך משמרת:</label>
+                    <select id="shift-duration-input" title="בחר משך משמרת בשעות">
+                        <option value="2">2 שעות</option>
+                        <option value="3">3 שעות</option>
+                        <option value="4" selected>4 שעות</option>
+                        <option value="5">5 שעות</option>
+                        <option value="6">6 שעות</option>
+                        <option value="7">7 שעות</option>
+                        <option value="8">8 שעות</option>
+                        <option value="9" disabled>9 שעות (לא מומלץ)</option>
+                    </select>
                 </div>
                 <button id="auto-calculate-btn">חשב זמן אידיאלי</button>
             </div>
