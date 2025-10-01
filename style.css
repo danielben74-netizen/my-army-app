@@ -1,0 +1,276 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 20px;
+    direction: rtl;
+    text-align: right;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #007bff;
+    text-align: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #343a40;
+    margin-top: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+/* קלט כללי */
+.input-section {
+    margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+/* עיצוב לאזור בחירת משך המשמרת החדש */
+.shift-setup-section .input-group-shift {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.shift-input-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.unit-label {
+    font-weight: bold;
+    color: #495057;
+}
+
+/* קלט כללי */
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.input-group input[type="text"], 
+.input-group input[type="number"],
+.input-group select {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    flex-grow: 1;
+    text-align: right;
+}
+
+.input-group input[type="number"] {
+    width: 80px;
+    flex-grow: 0;
+}
+
+
+.input-section button, #generate-schedule-btn, #auto-calculate-btn {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.input-section button:hover, #generate-schedule-btn:hover, #auto-calculate-btn:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+#generate-schedule-btn {
+    display: block;
+    width: 100%;
+    font-size: 1.2em;
+    margin: 20px 0;
+}
+
+#generate-schedule-btn:disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+}
+
+#auto-calculate-btn {
+    background-color: #6c757d;
+}
+
+/* רשימות נתונים */
+.data-list {
+    list-style: none;
+    padding: 0;
+}
+
+.data-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #f8f9fa;
+    border: 1px solid #bee5eb;
+    border-radius: 5px;
+    font-size: 1.1em;
+}
+
+.remove-btn, .remove-post-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 0 5px;
+    line-height: 1;
+}
+
+/* פלט סיכום */
+.output-section {
+    margin-top: 30px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+#summary-output > ul {
+    list-style: none;
+    padding: 0;
+}
+
+#summary-output > ul > li {
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #e9ecef;
+    border: 1px solid #bee5eb;
+    border-radius: 5px;
+    font-size: 1.1em;
+}
+
+#summary-output > ul > li ul {
+    margin-top: 10px;
+    padding-right: 20px;
+}
+
+#summary-output > ul > li ul li {
+    background: none;
+    border: none;
+    padding: 5px 0;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+/* כפתורי שליטה בטבלה */
+.schedule-controls {
+    margin-bottom: 15px;
+    display: flex; 
+    gap: 10px; 
+}
+
+/* כפתור העתקת טקסט */
+#copy-schedule-btn {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+#copy-schedule-btn:hover {
+    background-color: #0056b3;
+}
+
+/* כפתור ייצוא תמונה (חדש) */
+#export-image-btn {
+    padding: 10px 15px;
+    background-color: #6f42c1; /* סגול */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+#export-image-btn:hover {
+    background-color: #593699;
+}
+
+
+/* סידור מפורט (גריד) */
+.schedule-grid {
+    display: grid;
+    overflow-x: auto;
+    border: 1px solid #ddd;
+}
+
+.schedule-header, .schedule-row {
+    display: contents; /* מאפשר לילדים להיכנס ישירות לגריד */
+}
+
+.schedule-header .schedule-cell {
+    background-color: #343a40;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border: 1px solid #212529;
+    position: sticky; /* נשאר דביק למעלה */
+    top: 0;
+    z-index: 10;
+}
+
+.schedule-row .schedule-cell {
+    padding: 10px;
+    border: 1px solid #eee;
+    background-color: #fff;
+    font-size: 0.9em;
+    min-height: 40px; /* גובה מינימלי לשורה */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.schedule-row:nth-child(even) .schedule-cell:not(.time-cell) {
+    background-color: #f8f9fa; /* גוון בהיר לשורות זוגיות */
+}
+
+.time-cell {
+    font-weight: bold;
+    background-color: #e9ecef !important; 
+    position: sticky;
+    right: 0;
+    z-index: 5;
+    border-right: none;
+    border-left: 1px solid #eee;
+}
+
+.guard-cell span {
+    display: block;
+    padding: 2px 5px;
+    margin: 1px 0;
+    border-radius: 3px;
+    background-color: #d1ecf1;
+    color: #0c5460;
+    font-size: 0.85em;
+    width: 90%;
+}
