@@ -22,6 +22,7 @@ h1 {
     border-bottom: 2px solid #eee;
     padding-bottom: 10px;
     margin-bottom: 30px;
+    font-size: 1.8em; /* קצת קטן יותר בנייד */
 }
 
 h2 {
@@ -46,7 +47,7 @@ h2 {
     padding: 15px;
     border-radius: 8px;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* ברירת מחדל אנכית (טובה לנייד) */
     gap: 10px;
 }
 
@@ -71,11 +72,6 @@ h2 {
     border: 1px solid #ccc;
     width: 120px; /* רוחב נוח יותר */
     text-align: center;
-}
-
-.unit-label {
-    font-size: 1.1em;
-    color: #343a40;
 }
 
 #auto-calculate-btn {
@@ -204,7 +200,7 @@ h2 {
     cursor: not-allowed;
 }
 
-/* סיכום - עיצוב מעודכן לרישום לפי עמדה */
+/* סיכום */
 #summary-output ul {
     list-style: none;
     padding: 0;
@@ -247,6 +243,7 @@ h2 {
     font-size: 1em;
     transition: background-color 0.3s;
     margin-left: 5px;
+    width: auto; /* מאפשר ללחצנים להתכווץ */
 }
 
 #copy-schedule-btn {
@@ -266,7 +263,8 @@ h2 {
 /* סידור מפורט (גריד) */
 .schedule-grid {
     display: grid;
-    overflow-x: auto;
+    /* ה-overflow-x: auto יאפשר גלילה אופקית בטבלה בנייד */
+    overflow-x: auto; 
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 0.9em;
@@ -278,27 +276,29 @@ h2 {
 }
 
 .schedule-cell {
-    padding: 10px;
+    padding: 10px 5px; /* הקטנת ה-padding לרוחב */
     border: 1px solid #eee;
     text-align: center;
-    min-width: 80px;
+    min-width: 80px; /* רוחב תא מינימלי */
+    white-space: nowrap; /* מונע שבירת שורה בתא ככל האפשר */
 }
 
-/* תיקון נראות הכותרות! */
+/* כותרות הטבלה */
 .schedule-header .schedule-cell {
     font-weight: bold;
-    background-color: #343a40; /* צבע רקע כהה */
-    color: white; /* טקסט לבן */
+    background-color: #343a40; 
+    color: white; 
     border: 1px solid #212529; 
     position: sticky;
     top: 0;
     z-index: 10;
 }
 
+/* עמודת השעה - נשארת דביקה מימין */
 .time-cell {
     background-color: #f8f9fa;
     font-weight: bold;
-    min-width: 120px;
+    min-width: 100px; /* הקטנה קלה */
     position: sticky;
     right: 0;
     z-index: 5;
@@ -307,4 +307,97 @@ h2 {
 .guard-cell span {
     display: block;
     padding: 2px 0;
+}
+
+/* ============================================== */
+/* MEDIA QUERIES (התאמה לנייד)             */
+/* ============================================== */
+
+@media (max-width: 768px) {
+    
+    body {
+        padding: 10px; /* הקטנת ה-padding החיצוני */
+    }
+
+    .container {
+        padding: 15px; /* הקטנת ה-padding הפנימי */
+    }
+
+    /* שינוי פריסה מרכזית: שדות קלט וכפתורים מוצגים אחד מתחת לשני */
+    .input-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .input-group input[type="text"],
+    .input-group input[type="number"],
+    .input-group select,
+    .input-group button {
+        width: 100%; /* תופסים את כל רוחב המסך */
+        box-sizing: border-box;
+    }
+    
+    /* קבוצת הוספת חייל */
+    .input-group button {
+        margin-top: 5px; 
+    }
+    
+    /* שינוי פריסה: הגדרות משמרת */
+    .shift-setup-section .input-group-shift {
+        flex-direction: column;
+    }
+
+    .shift-input-container {
+        flex-direction: row; /* שמירה על שורה אחת: label ו-select */
+        align-items: center;
+    }
+    
+    .shift-input-container label {
+        font-size: 1.1em;
+        min-width: 100px; /* צמצום */
+    }
+    
+    #shift-duration-input {
+        flex-grow: 1; /* מילוי הרווח הנותר */
+        width: auto;
+    }
+
+    #auto-calculate-btn {
+        max-width: 100%; /* תופס את כל הרוחב */
+        align-self: auto;
+    }
+
+    /* רשימות נתונים */
+    .data-list li {
+        font-size: 1em;
+        padding: 6px 10px;
+        flex-grow: 1; /* מאפשר לכל פריט למלא את השורה בנייד */
+    }
+    
+    /* כפתורי ייצוא/העתקה */
+    .schedule-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #copy-schedule-btn, #export-image-btn {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    /* טבלת הסידור (Grid) */
+    .schedule-grid {
+        font-size: 0.8em; /* הקטנת הפונט בטבלה כדי לחסוך מקום */
+        min-width: 500px; /* רוחב מינימלי קבוע כדי לאפשר גלילה */
+    }
+    
+    .schedule-cell {
+        min-width: 60px; /* הקטנת רוחב התאים בטבלה */
+        padding: 8px 4px;
+    }
+
+    .time-cell {
+        min-width: 80px; /* הקטנת עמודת השעה */
+    }
 }
